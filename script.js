@@ -2,28 +2,21 @@ const CONFIG = {
   company:"Cerebro",
   tagline:"Celebrating a year of great work, together.",
   date:"2026-12-14T18:00:00+08:00", // YYYY-MM-DDTHH:mm:ss+offset (event time in Asia/Manila)
-  dateText:"DEC 14, 2026 / 6:00 PM",
-  city:"PASAY CITY",
-  venue:"Lola Cafe S'Maison",
+  dateText:"DEC 14, 2026 | 6:00 PM |",
+  city:"LOLA Cafe S'Maison",
+  venue:"LOLA Cafe S'Maison",
   address:"2nd Floor, S Maison, Conrad Hotel, MOA Complex, Seaside Boulevard, Coral Way, Pasay City",
-  dress:"Festive business attire. Think black, burgundy, and cream, with a touch of sparkle.",
-  gift:"Optional Exchange Gifts. Budget of 700, wrapped, with no name on the tag. Draw names by Dec 10.",
-  parking:"Free parking is available in the venue garage from 5:30 PM. Bring your ticket for validation.",
-  shuttle:"From QC take EDSA southbound, exit at Buendia, turn right on Buendia, then left on Evergreen Avenue. From Makati take EDSA northbound, exit at Buendia, turn left on Buendia, then left on Evergreen Avenue.",
-  rsvpBy:"December 5",
+  dress:"Festive business attire in shades of burgundy, with a touch of sparkle.",
+  gift:"Exchange Gifts. Budget of 700, wrapped, with no name on the tag.",
+  signoff:"With gratitude, The Cerebro Team",
   contactEmail:"hr@cerebro.ph", // Email address of HR (Ms. Naomi/Ms. Carmela/Sir Erick)
-  sheetUrl:"https://script.google.com/macros/s/AKfycbxCkT4bASnkaGb9h3_UHhIjaO4LxJpLHVm8j7j38gk-7fEnJDI93XnrmkvR9AAbcs_9CQ/exec",   // paste your Google Apps Script web app URL here
+  sheetUrl:"https://script.google.com/macros/s/AKfycbwm8yZGClWwJwaxuI3HOAYrPV6pShxbnSIWvc0pp0Skzmj-2x3W6fwY1jzNkLb8LcDcYQ/exec",   // paste your Google Apps Script web app URL here
   mapsUrl:"https://www.google.com/maps/place/LOLA+Cafe+-+S'Maison/@14.5311156,120.977497,17z/data=!3m1!4b1!4m6!3m5!1s0x3397cbad5d53170b:0xa8220c7e3d5c1892!8m2!3d14.5311156!4d120.9800719!16s%2Fg%2F11j4sfjx8v?entry=ttu&g_ep=EgoyMDI2MTExNi4wIKXMDSoASAFQAw%3D%3D"
 };
 const PROGRAM=[
- ["6:00 PM","Welcome Drinks","M8 3h8l-1 7a3 3 0 01-6 0z M12 13v7 M8 20h8"],
- ["7:00 PM","Dinner","M12 6a6 6 0 100 12 6 6 0 000-12z M12 9a3 3 0 100 6 3 3 0 000-6z"],
- ["8:00 PM","Leadership Address","M9 3h6a0 0 0 010 0v8a3 3 0 01-6 0z M6 11a6 6 0 0012 0 M12 17v4"],
- ["8:20 PM","Awards","M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"],
- ["8:45 PM","Games & Raffle","M5 5h14v14H5z M9 9h.01 M15 9h.01 M9 15h.01 M15 15h.01 M12 12h.01"],
- ["9:15 PM","Gift Exchange","M4 9h16v11H4z M12 9v11 M4 13h16 M12 9c-4-5-7 0 0 0 4-5 7 0 0 0"],
- ["9:45 PM","Dessert & Music","M9 18V6l10-2v12 M7 16a2 2 0 100 4 2 2 0 000-4z M17 14a2 2 0 100 4 2 2 0 000-4z"],
- ["10:30 PM","Farewell","M12 3v18 M4 7.5l16 9 M4 16.5l16-9"]
+ ["6:00 PM","Dinner","M12 6a6 6 0 100 12 6 6 0 000-12z M12 9a3 3 0 100 6 3 3 0 000-6z"],
+ ["7:00 PM","Games & Raffle","M5 5h14v14H5z M9 9h.01 M15 9h.01 M9 15h.01 M15 15h.01 M12 12h.01"],
+ ["8:00 PM","Gift Exchange","M4 9h16v11H4z M12 9v11 M4 13h16 M12 9c-4-5-7 0 0 0 4-5 7 0 0 0"],
 ];
 /* ============================================== */
 
@@ -35,10 +28,16 @@ $("#mail").textContent=CONFIG.contactEmail;$("#mail").href="mailto:"+CONFIG.cont
 
 const calendarStart=new Date(CONFIG.date);
 const calendarEnd=new Date(calendarStart.getTime()+3*36e5);
-const calendarDate=d=>d.toISOString().replace(/[-:]|\.\d{3}/g,"").slice(0,15);
+const calendarDate=d=>{
+ const parts=Object.fromEntries(new Intl.DateTimeFormat("en-GB",{
+  timeZone:"Asia/Manila",year:"numeric",month:"2-digit",day:"2-digit",
+  hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"
+ }).formatToParts(d).map(({type,value})=>[type,value]));
+ return `${parts.year}${parts.month}${parts.day}T${parts.hour}${parts.minute}${parts.second}`;
+};
 const calendarParams=new URLSearchParams({
  action:"TEMPLATE",
- text:CONFIG.company+" Christmas Party",
+ text:"[IN PERSON] "+CONFIG.company+" Christmas Party",
  dates:calendarDate(calendarStart)+"/"+calendarDate(calendarEnd),
  ctz:"Asia/Manila",
  location:CONFIG.venue+", "+CONFIG.address,
@@ -68,21 +67,20 @@ $("#form").addEventListener("submit",e=>{
  const chk=(el,bad,msg)=>{el.parentElement.querySelector(".err").textContent=bad?msg:"";el.setAttribute("aria-invalid",bad?"true":"false");if(bad){ok=false;firstBad=firstBad||el}};
  chk(nameEl,nameEl.value.trim().length<2,"Enter your full name.");
  chk(f.email,!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.value),"Enter a valid work email.");
- chk(f.att,!f.att.value,"Tell us if you can make it.");
  if(!ok){firstBad.focus();return}
  const data=Object.fromEntries(new FormData(f));
  const btn=f.querySelector("button[type=submit]");btn.disabled=true;btn.textContent="Sending...";
- const finish=()=>{$("#who").textContent=nameEl.value.split(" ")[0];f.style.display="none";$("#done").classList.add("show");$("#done").focus()};
+ const finish=()=>{$("#who").textContent=nameEl.value.split(" ")[0];$(".reply-title").style.display="none";f.style.display="none";$("#done").classList.add("show");$("#done").focus()};
  if(!CONFIG.sheetUrl){console.log("RSVP (no sheetUrl set)",data);finish();return}
  fetch(CONFIG.sheetUrl,{method:"POST",mode:"no-cors",body:new URLSearchParams(data)})
   .then(finish)
-  .catch(()=>{btn.disabled=false;btn.textContent="Send my reply";alert("We couldn't send your reply. Please try again.")})});
+  .catch(()=>{btn.disabled=false;btn.textContent="Send my confirmation";alert("We couldn't send your reply. Please try again.")})});
 
 /* scroll reveal + active nav */
 const io=new IntersectionObserver(es=>es.forEach(x=>x.isIntersecting&&(x.target.classList.add("in"),io.unobserve(x.target))),{threshold:.12});
 document.querySelectorAll(".rv").forEach(e=>io.observe(e));
 const links=[...document.querySelectorAll("nav a")];
-const so=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting)links.forEach(l=>l.classList.toggle("on",l.getAttribute("href")==="#"+x.target.id))}),{rootMargin:"-45% 0px -50% 0px"});
+const so=new IntersectionObserver(es=>es.forEach(x=>{if(!x.isIntersecting)return;links.forEach(l=>{const on=l.getAttribute("href")==="#"+x.target.id;l.classList.toggle("on",on);on?l.setAttribute("aria-current","true"):l.removeAttribute("aria-current")})}),{rootMargin:"-45% 0px -50% 0px"});
 ["home","story","details","rsvp"].forEach(id=>so.observe(document.getElementById(id)));
 
 /* snow */
