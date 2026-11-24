@@ -6,8 +6,8 @@ const CONFIG = {
   city:"LOLA Cafe S'Maison",
   venue:"LOLA Cafe S'Maison",
   address:"2nd Floor, S Maison, Conrad Hotel, MOA Complex, Seaside Boulevard, Coral Way, Pasay City",
-  dress:"Festive business attire in shades of burgundy, with a touch of sparkle.",
-  gift:"Exchange Gifts. Budget of 700, wrapped, with no name on the tag.",
+  dress:"Smart Casual – Burgundy Theme",
+  gift:"Please prepare a wrapped gift worth ₱700 for the person assigned to you through the draw.",
   signoff:"With gratitude, The Cerebro Team",
   contactEmail:"hr@cerebro.ph", // Email address of HR (Ms. Naomi/Ms. Carmela/Sir Erick)
   sheetUrl:"https://script.google.com/macros/s/AKfycbwm8yZGClWwJwaxuI3HOAYrPV6pShxbnSIWvc0pp0Skzmj-2x3W6fwY1jzNkLb8LcDcYQ/exec",   // paste your Google Apps Script web app URL here
